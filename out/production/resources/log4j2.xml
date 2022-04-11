@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <!-- Appenders -->
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5p: %c - %m%n" />
+        </Console>
+        <Properties>
+            <Property name="basePath">D://Log/JavaLog</Property>
+        </Properties>
+        <RollingFile name="RollingFile" fileName="D://logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"
+                 ignoreExceptions="false">
+        <PatternLayout>
+            <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+        </PatternLayout>
+        <TimeBasedTriggeringPolicy />
+    </RollingFile>
+    </Appenders>
+
+    <!-- Application Loggers -->
+    <Loggers>
+        <Logger name="org.springframework" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="com.toy.packet_capture" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+    </Loggers>
+</Configuration>
