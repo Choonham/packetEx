@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 @Service
 public class PacketExServiceImpl implements PacketExService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(PacketExService.class);
 
     @Override
     @Async

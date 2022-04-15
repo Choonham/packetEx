@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 @Aspect
 public class LoggerService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(LoggerService.class);
 
     @Before("execution(* com.toy.packet_capture.*.*.*(..))")
     public void beforeLog(JoinPoint jp) {

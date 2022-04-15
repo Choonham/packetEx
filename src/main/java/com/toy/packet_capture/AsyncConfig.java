@@ -52,7 +52,6 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setBeanName(EXECUTOR_BEAN_NAME);
         executor.setWaitForTasksToCompleteOnShutdown(false);
         executor.initialize();
-        System.out.println("12341234");
         return executor;
     }
 
