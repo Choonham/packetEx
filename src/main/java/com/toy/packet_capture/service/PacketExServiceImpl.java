@@ -102,23 +102,44 @@ public class PacketExServiceImpl implements PacketExService {
             if (packet.hasHeader(eth)) {
                 logger.info("##################################### ethernet start #####################################");
                 logger.info("출발지 MAC 주소 = "+ FormatUtils.mac(eth.source()) +"||도착지 MAC 주소 = " + FormatUtils.mac(eth.destination()));
+                /**
+                 * Preamble(FF FF FF FF FF FF FF FF) DstAddress(FF FF FF FF FF FF) SrcAddress(FF FF FF FF FF FF)
+                 * Type(FF FF) Data() FCS(FF FF FF FF)
+                 * */
                 logger.info("##################################### ethernet end #####################################");
             }
             if (packet.hasHeader(ip)) {
                 logger.info("##################################### ip start #####################################");
                 logger.info("출발지 IP 주소 = "+FormatUtils.ip(ip.source())+" || 도착지 IP 주소 = "+ FormatUtils.ip(ip.destination()));
+                /**
+                 * Version(F) HeaderLength(F) typeOfService(FF) Total Length(FF FF)
+                 * Identification(FF FF) Flag(3bit) FragmentOffset(13bit)
+                 * TTL(FF) ProtocolType(FF) Header Checksum(FF FF)
+                 * Source IP Address(FF FF FF FF)
+                 * Destination IP Address(FF FF FF FF)
+                 *
+                 * */
                 logger.info("##################################### ip end #####################################");
             }
             if (packet.hasHeader(tcp)) {
                 logger.info("##################################### tcp start #####################################");
                 logger.info("출발지 TCP 주소 = "+tcp.source()+"|| 도착지 TCP 주소 = "+tcp.destination());
                 logger.info("\n" + tcp.getPacket().toHexdump());
+                /**
+                 * SourcePort(FF FF) DestinationPort(FF FF) seq(FF FF FF FF)
+                 * ACK(FF FF FF FF) headerLength(F) Reservation(6bit) FLAG(1bit x 6)
+                 * window size(FF FF) Checksum(FF) Urgent Point(FF)
+                 * */
                 logger.info("##################################### tcp end #####################################");
             }
             if (packet.hasHeader(udp)) {
                 logger.info("##################################### udp start #####################################");
                 logger.info("출발지 UDP 주소 = "+udp.source()+"|| 도착지 UDP 주소 = "+udp.destination());
                 logger.info("\n" + udp.getPacket().toHexdump());
+                /**
+                 * SourcePort(FF FF) DestinationPort(FF FF)
+                 * UDP Datagram Length(FF FF) Checksum(FF FF)
+                 * */
                 logger.info("##################################### udp end #####################################");
             }
             if (packet.hasHeader(payload)) {

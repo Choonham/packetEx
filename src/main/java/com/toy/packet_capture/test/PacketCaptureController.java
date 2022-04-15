@@ -26,11 +26,10 @@ public class PacketCaptureController {
     @ResponseBody
     public String openServer(String expression) {
         int rtnVal = 0;
-
+        AsyncConfig.setSTOPFLAG(false);
         try {
             if(asyncConfig.checkSampleTaskExecute()) {
                 asyncConfig.getAsyncExecutor();
-                AsyncConfig.setSTOPFLAG(false);
                 packetExService.listeningNet(expression, 0xFFFFFF00);
                 rtnVal = 1;
             }else {
