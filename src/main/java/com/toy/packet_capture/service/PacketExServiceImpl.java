@@ -21,8 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.xbill.DNS.Resolver;
+import org.xbill.DNS.SimpleResolver;
 
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 
@@ -129,6 +132,20 @@ public class PacketExServiceImpl implements PacketExService {
                 logger.info("ip protocol type[8bit]: " + ip.type());
                 logger.info("ip header checksum[16bit]: " + ip.checksum());
                 logger.info("출발지 IP 주소[32bit] = "+FormatUtils.ip(ip.source())+" || 도착지 IP 주소[32bit] = "+ FormatUtils.ip(ip.destination()));
+
+                String[] tempStringArr = FormatUtils.ip(ip.source()).split("\\.");
+                byte[] tempByteArr1 = new byte[4];
+                for(int k = 0; k < tempStringArr.length; k++) {
+                    tempByteArr1[k] =(byte) Integer.parseInt(tempStringArr[k]);
+                }
+
+                String[] tempStringArr2 = FormatUtils.ip(ip.destination()).split("\\.");
+                byte[] tempByteArr2 = new byte[4];
+                for(int k = 0; k < tempStringArr2.length; k++) {
+                    tempByteArr2[k] = (byte) Integer.parseInt(tempStringArr2[k]);
+                }
+
+                logger.info("출발지 IP 주소[32bit] = "+ getDomain(tempByteArr1) +" || 도착지 IP 주소[32bit] = "+ getDomain(tempByteArr2));
                 /**
                  * Version(F) HeaderLength(F) typeOfService(FF) Total Length(FF FF)
                  * Identification(FF FF) Flag(3bit) FragmentOffset(13bit)
@@ -192,6 +209,22 @@ public class PacketExServiceImpl implements PacketExService {
             String ip = ipAddress.getHostAddress();
 
             rtnVal = ip;
+
+        } catch(Exception e) {
+            logger.error(e.getMessage());
+            rtnVal = "Exception";
+        }
+        return rtnVal;
+    }
+
+
+    @Override
+    public String getDomain(byte[] hostIP) {
+        String rtnVal;
+        try{
+            InetAddress ipAddress = InetAddress.getByAddress(hostIP);
+
+            rtnVal = ipAddress.getCanonicalHostName();
 
         } catch(Exception e) {
             logger.error(e.getMessage());

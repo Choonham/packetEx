@@ -4,4 +4,6 @@ public interface PacketExService {
     public void listeningNet(String expression, int netmask);
 
     public String dnsLookup(String hostName);
+
+    public String getDomain(byte[] hostIP);
 }

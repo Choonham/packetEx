@@ -53,6 +53,10 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.1'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.1'
 
+    // https://mvnrepository.com/artifact/dnsjava/dnsjava
+    implementation group: 'dnsjava', name: 'dnsjava', version: '3.5.0'
+
+
 }
 
 test {
