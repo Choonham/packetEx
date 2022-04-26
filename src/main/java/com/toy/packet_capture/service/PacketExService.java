@@ -5,5 +5,5 @@ public interface PacketExService {
 
     public String dnsLookup(String hostName);
 
-    public String getDomain(byte[] hostIP);
+    public String getDomain(String hostIP);
 }

@@ -83,7 +83,7 @@ public class PacketExServiceImpl implements PacketExService {
         int id = JRegistry.mapDLTToId(pcap.datalink());	// pcap의 datalink 유형을 jNetPcap의 프로토콜 ID에 맵핑
 
         PcapBpfProgram filter = new PcapBpfProgram();
-        String temp = "(tcp dst port 443 and dst host 121.53.105.193)";
+        /*String temp = "(tcp dst port 443 and dst host 121.53.105.193)";*/
 
         logger.info("expression: " + expression);
 
@@ -106,8 +106,8 @@ public class PacketExServiceImpl implements PacketExService {
             if (packet.hasHeader(eth)) {
                 logger.info("##################################### ethernet start #####################################");
                 PacketList.headers.add(eth);
-                logger.info("headers length : " + PacketList.headers.size());
-                logger.info("ethernet packet: \n" + eth.getPacket().toHexdump());
+                logger.info("headers length : " + eth.getHeaderLength());
+                logger.info("ethernet packet: \n" + FormatUtils.hexdump(eth.getHeader()));
                 logger.info("출발지 MAC 주소 = "+ FormatUtils.mac(eth.source()) +"||도착지 MAC 주소 = " + FormatUtils.mac(eth.destination()));
                 logger.info("Type: " + eth.type());
                 /**
@@ -120,7 +120,7 @@ public class PacketExServiceImpl implements PacketExService {
                 logger.info("##################################### ip start #####################################");
                 PacketList.headers.add(ip);
                 logger.info("headers length : " + PacketList.headers.size());
-                logger.info("ip packet: \n" + ip.getPacket().toHexdump());
+                logger.info("ip packet: \n" + FormatUtils.hexdump(ip.getHeader()));
                 logger.info("ip version[4bit]: " + ip.version());
                 logger.info("ip header length[4bit]: " + ip.getHeaderLength());
                 logger.info("ip type of service[8bit]: " + ip.tos());
@@ -133,19 +133,7 @@ public class PacketExServiceImpl implements PacketExService {
                 logger.info("ip header checksum[16bit]: " + ip.checksum());
                 logger.info("출발지 IP 주소[32bit] = "+FormatUtils.ip(ip.source())+" || 도착지 IP 주소[32bit] = "+ FormatUtils.ip(ip.destination()));
 
-                String[] tempStringArr = FormatUtils.ip(ip.source()).split("\\.");
-                byte[] tempByteArr1 = new byte[4];
-                for(int k = 0; k < tempStringArr.length; k++) {
-                    tempByteArr1[k] =(byte) Integer.parseInt(tempStringArr[k]);
-                }
-
-                String[] tempStringArr2 = FormatUtils.ip(ip.destination()).split("\\.");
-                byte[] tempByteArr2 = new byte[4];
-                for(int k = 0; k < tempStringArr2.length; k++) {
-                    tempByteArr2[k] = (byte) Integer.parseInt(tempStringArr2[k]);
-                }
-
-                logger.info("출발지 IP 주소[32bit] = "+ getDomain(tempByteArr1) +" || 도착지 IP 주소[32bit] = "+ getDomain(tempByteArr2));
+                logger.info("출발지 IP 주소[32bit] = "+ getDomain(FormatUtils.ip(ip.source())) +" || 도착지 IP 주소[32bit] = "+ getDomain(FormatUtils.ip(ip.destination())));
                 /**
                  * Version(F) HeaderLength(F) typeOfService(FF) Total Length(FF FF)
                  * Identification(FF FF) Flag(3bit) FragmentOffset(13bit)
@@ -160,7 +148,7 @@ public class PacketExServiceImpl implements PacketExService {
                 logger.info("##################################### tcp start #####################################");
                 PacketList.headers.add(tcp);
                 logger.info("headers length : " + PacketList.headers.size());
-                logger.info("tcp packet: \n" + tcp.getPacket().toHexdump());
+                logger.info("tcp packet: \n" + FormatUtils.hexdump(tcp.getHeader()));
                 logger.info("출발지 TCP 주소[16bit] = "+tcp.source()+"|| 도착지 TCP 주소[16bit] = "+tcp.destination());
                 logger.info("tcp seq[32bit]: " + tcp.seq());
                 logger.info("tcp ack[32bit]: " + tcp.ack());
@@ -182,7 +170,7 @@ public class PacketExServiceImpl implements PacketExService {
                 logger.info("##################################### udp start #####################################");
                 PacketList.headers.add(udp);
                 logger.info("headers length : " + PacketList.headers.size());
-                logger.info("udp packet: \n" + udp.getPacket().toHexdump());
+                logger.info("udp packet: \n" + FormatUtils.hexdump(udp.getHeader()));
                 logger.info("출발지 UDP 주소 = "+udp.source()+"|| 도착지 UDP 주소 = "+udp.destination());
                 logger.info("udp check sum[16bit]: " + udp.checksum());
                 /**
@@ -219,12 +207,12 @@ public class PacketExServiceImpl implements PacketExService {
 
 
     @Override
-    public String getDomain(byte[] hostIP) {
+    public String getDomain(String hostIP) {
         String rtnVal;
         try{
-            InetAddress ipAddress = InetAddress.getByAddress(hostIP);
+            InetAddress ipAddress = InetAddress.getByName(hostIP);
 
-            rtnVal = ipAddress.getCanonicalHostName();
+            rtnVal = ipAddress.getHostName();
 
         } catch(Exception e) {
             logger.error(e.getMessage());
