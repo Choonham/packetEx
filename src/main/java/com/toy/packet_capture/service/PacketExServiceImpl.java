@@ -103,6 +103,8 @@ public class PacketExServiceImpl implements PacketExService {
             packet.scan(id); //새로운 패킷을 스캔하여 포함 된 헤더를 찾습니다
             logger.info(Long.toString(packet.getFrameNumber()));
             logger.info("##################################### Packet #####################################");
+            logger.info("HOLY PACKET: \n");
+            logger.info(packet.toHexdump());
             if (packet.hasHeader(eth)) {
                 logger.info("##################################### ethernet start #####################################");
                 PacketList.headers.add(eth);
